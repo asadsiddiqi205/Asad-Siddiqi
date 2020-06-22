@@ -1,12 +1,13 @@
 import React from "react";
-
+import Header from "./Header";
+import { Redirect, withRouter } from "react-router-dom";
 class App7 extends React.Component {
   constructor() {
     super();
     this.state = {
       email: "",
       password: "",
-      loginstatus: ""
+      status: "",
     };
 
     this.handlechange = this.handlechange.bind(this);
@@ -17,24 +18,46 @@ class App7 extends React.Component {
     event.target.type == "checkbox"
       ? this.setState({ [event.target.name]: event.target.checked })
       : this.setState({
-          [event.target.name]: event.target.value
+          [event.target.name]: event.target.value,
         });
   }
-  submithandler() {
-    fetch("http://localhost:5000/loginauth", {
+  async submithandler(event) {
+    event.preventDefault();
+    await fetch("http://localhost:5000/loginauth", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         email: this.state.email,
-        password: this.state.password
-      })
+        password: this.state.password,
+      }),
     })
-      .then(res => res.text())
-      .then(res => alert(res));
+      .then((res) => res.json())
+      .then((res) => {
+        localStorage.setItem("tok", res.token);
+        localStorage.setItem("type", res.status1);
+        localStorage.setItem("email", this.state.email);
+      });
+    if (
+      localStorage.getItem("tok") &&
+      localStorage.getItem("tok") !== "undefined" &&
+      localStorage.getItem("type") == "customer"
+    ) {
+      console.log(localStorage.getItem("type"));
+      this.props.history.push("/items");
+    } else if (
+      localStorage.getItem("tok") &&
+      localStorage.getItem("tok") !== "undefined" &&
+      localStorage.getItem("type") == "Admin"
+    ) {
+      this.props.history.push("/admin");
+    } else if (localStorage.getItem("tok") == "undefined") {
+      this.setState({ status: "Error" });
+    }
   }
   render() {
     return (
       <div>
+        <Header />
         <html lang='en'>
           <head>
             <meta charset='UTF-8' />
@@ -140,4 +163,4 @@ class App7 extends React.Component {
     );
   }
 }
-export default App7;
+export default withRouter(App7);

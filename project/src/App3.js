@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "./Header";
 
 class App3 extends React.Component {
   constructor() {
@@ -6,7 +7,7 @@ class App3 extends React.Component {
     this.state = {
       fullname: "",
       email: "",
-      password: ""
+      password: "",
     };
     this.handlechange = this.handlechange.bind(this);
     this.submithandler = this.submithandler.bind(this);
@@ -18,8 +19,8 @@ class App3 extends React.Component {
       body: JSON.stringify({
         fullname: this.state.fullname,
         email: this.state.email,
-        password: this.state.password
-      })
+        password: this.state.password,
+      }),
     });
   }
   handlechange(event) {
@@ -27,13 +28,14 @@ class App3 extends React.Component {
     event.target.type == "checkbox"
       ? this.setState({ [event.target.name]: event.target.checked })
       : this.setState({
-          [event.target.name]: event.target.value
+          [event.target.name]: event.target.value,
         });
   }
 
   render() {
     return (
       <div>
+        <Header></Header>
         <div>
           <html lang='en'>
             <head>
